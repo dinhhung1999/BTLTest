@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Casio</string>
+    <string name="titleLogin">Chúng tôi luôn mong muốn đem lại những trải nghiệm tuyệt vời cho bạn</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="email">Email</string>
+    <string name="password">Mật khẩu</string>
+    <string name="signup">Đăng ký</string>
+    <string name="action_sign_in">Đăng nhập</string>
+    <string name="invalid_username">Tên đăng nhập không hợp lệ</string>
+    <string name="invalid_email">Không phải là một địa chỉ e-mail hợp lệ</string>
+    <string name="username_empty">Tên đăng nhập không được để trống</string>
+    <string name="invalid_password">Mật khẩu phải có trên 6 ký tự</string>
+    <string name="incorrectPassword">Mật khẩu không đúng</string>
+    <string name="login_failed">"Đăng nhập không thành công"</string>
+    <string name="forgotPassword">"Quên mật khẩu?"</string>
+    <string name="usernameAvailable">Email đã tồn tại</string>
+    <string name="usernameNotExist">Tên đăng nhập không tồn tại</string>
+    <string name="hasSpaces">Mật khẩu không được chứa khoảng trống</string>
+    <string name="hasUpper">Mật khẩu phải có 1 ký tự viết hoa</string>
+    <string name="hasLower">Mật khẩu phải có 1 ký tự viết thường</string>
+    <string name="hasNumber">Mật khẩu phải có 1 chữ số</string>
+    <string name="hasSymbol">Mật khẩu phải có 1 ký tự đặc biệt</string>
+    <string name="registerSuccess">Đăng ký thành công</string>
+    <string name="loginSuccess">Đăng nhập thành công</string>
+    <string name="wellcome">Chào mừng</string>
+    <string name="featureDevelopment">Tính năng đang phát triển</string>
+    <string name="message_request_permission_read_phone_state">Chúng tôi cần được cấp quyền để tiếp tục</string>
+</resources>
