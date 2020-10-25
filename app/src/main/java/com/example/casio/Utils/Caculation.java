@@ -17,6 +17,9 @@ public class Caculation {
         } else  return  0;
     }
     public boolean isZero(double b) {
-        return b==0;
+        if(b==0)
+            return true;
+        else
+            return false;
     }
 }

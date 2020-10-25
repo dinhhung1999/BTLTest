@@ -52,9 +52,15 @@ public class CaculationTest {
     }
 
     @Test
-    public void isZero_C1C2() throws  Throwable {
+    public void isZero_C1C2_1() throws  Throwable {
         double expected = 0;
         Assert.assertTrue(caculation.isZero(expected));
+
+    }
+    @Test
+    public void isZero_C1C2_2() throws  Throwable {
+        double expected = 2;
+        Assert.assertFalse(caculation.isZero(expected));
 
     }
 }
