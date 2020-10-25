@@ -76,6 +76,24 @@ public class SQLHelper extends SQLiteOpenHelper {
         closeDB();
         return users;
     }
+    public User getUser(String userName) {
+        User user = new User();
+
+        sqLiteDatabase = getReadableDatabase();
+        cursor = sqLiteDatabase.rawQuery("SELECT * FROM USER WHERE TRIM(username) = '"+ userName.trim()+"'", null);
+        if (cursor!=null&&cursor.getColumnCount()!=0){
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(cursor.getColumnIndex(ID));
+                String username = cursor.getString(cursor.getColumnIndex(USERNAME));
+                String password = cursor.getString(cursor.getColumnIndex(PASSWORD));
+//            String date = cursor.getString(cursor.getColumnIndex("date"));
+                user =new User(id,username,password);
+            }
+        }
+        closeDB();
+        return user;
+    }
+
     private void closeDB() {
         if (sqLiteDatabase != null) sqLiteDatabase.close();
         if (contentValues != null) contentValues.clear();

@@ -7,7 +7,7 @@
     <string name="signup">Đăng ký</string>
     <string name="action_sign_in">Đăng nhập</string>
     <string name="invalid_username">Tên đăng nhập không hợp lệ</string>
-    <string name="invalid_email">Không phải là một địa chỉ e-mail hợp lệ</string>
+    <string name="invalid_email">Bạn phải nhập email hoặc số điện thoại hợp lệ</string>
     <string name="username_empty">Tên đăng nhập không được để trống</string>
     <string name="invalid_password">Mật khẩu phải có trên 6 ký tự</string>
     <string name="incorrectPassword">Mật khẩu không đúng</string>

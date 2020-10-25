@@ -214,10 +214,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else if (op.equals("*")) {
                     dou = utils.multiplication(d1,d2);
                 } else if (op.equals("/")) {
-                    dou = utils.division(d1,d2);
-                    if(dou == 0 && d1!=0) {
+                    if(!utils.isZero(d2)) {
                         Toast.makeText(getBaseContext(),"Không thể chia cho 0", Toast.LENGTH_SHORT).show();
                     }
+                    else {
+                        dou= utils.division(d1,d2);
+                    }
+
                 }
 
                 double media = dou - (int) dou;

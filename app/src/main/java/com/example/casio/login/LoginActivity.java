@@ -9,7 +9,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -28,14 +27,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoginActivity extends AppCompatActivity {
-    String username ="";
-    String password ="";
+    User user;
     final String MD5 = "MD5";
     final int LOGINACTIVITY = 1999;
     ActivityLoginBinding binding;
     LoginViewListener listener = new LoginViewListener();
     SQLHelper sqlHelper;
-    PasswordUtil passwordUtil;
+    Valilator valilator;
     List<User> users = new ArrayList<>();
     VFMSharePreference sharePreference;
     @Override
@@ -47,25 +45,8 @@ public class LoginActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this,R.layout.activity_login);
 
         if (!checkRequiredPermissions()) checkRequiredPermissions();
-        passwordUtil = new PasswordUtil();
+        valilator = new Valilator();
         sqlHelper = new SQLHelper(getBaseContext());
-//        sharePreference = new VFMSharePreference(this);
-//        username = sharePreference.getStringValue("username");
-//        password = sharePreference.getStringValue("password");
-//        if (username.length()!=0) binding.etEmail.setText(username);
-//        if (password.length()!=0) {
-//            binding.etPass.setText(password);
-//            if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
-//            for (int i =0; i<users.size();i++) {
-//                if (md5(password).equals(users.get(i).getPassword())) {
-//                    sharePreference.putStringValue("username", users.get(i).getUsername());
-//                    sharePreference.putStringValue("password", password);
-//                    sharePreference.putIntValue("user_id", users.get(i).getId());
-//                    binding.llForm.setVisibility(View.GONE);
-//                    login();
-//                }
-//            }
-//        }
         binding.btnSignIn.setOnClickListener(v -> {
             binding.user.setError(null);
             binding.user.setErrorEnabled(false);
@@ -89,24 +70,23 @@ public class LoginActivity extends AppCompatActivity {
 //                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (isValidEmail(loginUser.getEditText().getText())){
+            if (valilator.isValidEmail(loginUser.getEditText().getText().toString())){
                 if (!loginUser.getEditText().getText().toString().isEmpty()){
                     if (users.size()!=0) {
-                        for (int i =0; i<users.size();i++) {
-                            if (loginUser.getEditText().getText().toString().equals(users.get(i).getUsername())) {
-                                if (md5(loginPass.getEditText().getText().toString()).equals(users.get(i).getPassword())) {
-                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
-                                    Toast.makeText(getBaseContext(),getText(R.string.loginSuccess)+" \n"+ getText(R.string.wellcome)+" "+users.get(i).getUsername(),Toast.LENGTH_SHORT).show();
-                                    startActivity(intent);
-                                } else {
-                                    loginPass.setError(getText(R.string.incorrectPassword));
-//                                    Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                            } else {
-                                loginUser.setError(getText(R.string.usernameNotExist));
-//                                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
+                        user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
+                        if (user!=null) {
+                            if (md5(loginPass.getEditText().getText().toString()).equals(user.getPassword())) {
+                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                Toast.makeText(getBaseContext(),getText(R.string.loginSuccess)+" \n"+ getText(R.string.wellcome)+" "+user.getUsername(),Toast.LENGTH_SHORT).show();
+                                startActivity(intent);
                             }
+                            else {
+                                loginPass.setError(getText(R.string.incorrectPassword));
+                                return;
+                            }
+                        } else {
+                            loginUser.setError(getText(R.string.usernameNotExist));
+                            return;
                         }
                     } else {
                         loginUser.setError(getText(R.string.usernameNotExist));
@@ -118,7 +98,31 @@ public class LoginActivity extends AppCompatActivity {
 //                    Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                     return;
                 }
-            } else {
+            } else if(valilator.validatePhoneNumber(loginUser.getEditText().getText().toString())){
+                    if (users.size()!=0) {
+                        user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
+                        if (user!=null) {
+                            if (md5(loginPass.getEditText().getText().toString()).equals(user.getPassword())) {
+                                    Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                    Toast.makeText(getBaseContext(),getText(R.string.loginSuccess)+" \n"+ getText(R.string.wellcome)+" "+user.getUsername(),Toast.LENGTH_SHORT).show();
+                                    startActivity(intent);
+                                }
+                            else {
+                                loginPass.setError(getText(R.string.incorrectPassword));
+                                return;
+                            }
+                        } else {
+                            loginUser.setError(getText(R.string.usernameNotExist));
+                            return;
+                        }
+//
+                    } else {
+                        loginUser.setError(getText(R.string.usernameNotExist));
+//                        Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+            }
+            else {
                 loginUser.setError(getText(R.string.invalid_email));
 //                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                 return;
@@ -130,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
                 loginUser.setError(getText(R.string.username_empty));
                 return;
             }
-            if (!isValidEmail(loginUser.getEditText().getText())) {
+            if (!valilator.isValidEmail(loginUser.getEditText().getText().toString()) && !valilator.validatePhoneNumber(loginUser.getEditText().getText().toString()) ) {
                 loginUser.setError(getText(R.string.invalid_email));
                 return;
             }
@@ -142,20 +146,20 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }
             }
-            if (!passwordUtil.hasLength(loginPass.getEditText().getText().toString())) {
+            if (!valilator.hasLength(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.invalid_password));
                 return;
             }
-            if (!passwordUtil.hasLowerCase(loginPass.getEditText().getText().toString())) {
+            if (!valilator.hasLowerCase(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.hasLower));
                 return;
-            }if (!passwordUtil.hasUpperCase(loginPass.getEditText().getText().toString())) {
+            }if (!valilator.hasUpperCase(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.hasUpper));
                 return;
-            }if (!passwordUtil.hasSymbol(loginPass.getEditText().getText().toString())) {
+            }if (!valilator.hasSymbol(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.hasSymbol));
                 return;
-            }if (!passwordUtil.hasSpace(loginPass.getEditText().getText().toString())) {
+            }if (valilator.hasSpace(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.hasSpaces));
                 return;
             } sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
@@ -185,12 +189,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         return "";
     }
-    public boolean isValidEmail(CharSequence target) {
-        if (target == null)
-            return false;
 
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
     private boolean checkRequiredPermissions(){
         String[] perms ={Manifest.permission.CHANGE_CONFIGURATION,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
