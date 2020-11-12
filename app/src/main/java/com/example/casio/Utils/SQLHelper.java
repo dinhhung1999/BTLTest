@@ -3,6 +3,7 @@ package com.example.casio.Utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -45,6 +46,13 @@ public class SQLHelper extends SQLiteOpenHelper {
             db.execSQL("drop table if exists " + DB_USER_TABLE);
             onCreate(db);
         }
+    }
+    public void open() throws SQLException {
+        sqLiteDatabase = getWritableDatabase();
+    }
+
+    public void close() {
+        sqLiteDatabase.close();
     }
 
     public void insertUser(String username, String password) {

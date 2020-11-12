@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     List<User> users = new ArrayList<>();
     VFMSharePreference sharePreference;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -128,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
         }
-        void onRegister(TextInputLayout loginUser, TextInputLayout loginPass) {
+    public void onRegister(TextInputLayout loginUser, TextInputLayout loginPass) {
             if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
             if (loginUser.getEditText().getText().toString().isEmpty()) {
                 loginUser.setError(getText(R.string.username_empty));
@@ -218,4 +218,42 @@ public class LoginActivity extends AppCompatActivity {
             }
         }, 1000);
     }
+    public void onRegister(TextInputLayout loginUser, TextInputLayout loginPass) {
+        if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
+        if (loginUser.getEditText().getText().toString().isEmpty()) {
+            loginUser.setError(getText(R.string.username_empty));
+            return;
+        }
+        if (!valilator.isValidEmail(loginUser.getEditText().getText().toString()) && !valilator.validatePhoneNumber(loginUser.getEditText().getText().toString()) ) {
+            loginUser.setError(getText(R.string.invalid_email));
+            return;
+        }
+        if (users.size()!=0) {
+            for (int i =0; i<users.size();i++) {
+                if (users.get(i).getUsername().equals(loginUser.getEditText().getText().toString())) {
+                    loginUser.setError(getText(R.string.usernameAvailable));
+                    return;
+                }
+            }
+        }
+        if (!valilator.hasLength(loginPass.getEditText().getText().toString())) {
+            loginPass.setError(getText(R.string.invalid_password));
+            return;
+        }
+        if (!valilator.hasLowerCase(loginPass.getEditText().getText().toString())) {
+            loginPass.setError(getText(R.string.hasLower));
+            return;
+        }if (!valilator.hasUpperCase(loginPass.getEditText().getText().toString())) {
+            loginPass.setError(getText(R.string.hasUpper));
+            return;
+        }if (!valilator.hasSymbol(loginPass.getEditText().getText().toString())) {
+            loginPass.setError(getText(R.string.hasSymbol));
+            return;
+        }if (valilator.hasSpace(loginPass.getEditText().getText().toString())) {
+            loginPass.setError(getText(R.string.hasSpaces));
+            return;
+        } sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
+        Toast.makeText(getBaseContext(),getText(R.string.registerSuccess),Toast.LENGTH_SHORT).show();
+    }
+
 }

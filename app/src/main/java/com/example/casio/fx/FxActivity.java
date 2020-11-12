@@ -42,7 +42,6 @@ public class FxActivity extends AppCompatActivity {
         btn_timX.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("a", ""+ key);
                 if (key == 0) {
                     if (etA.getText().toString().trim().length() >0 && etB.getText().toString().trim().length() >0) {
                         ptbac1(Double.parseDouble(etA.getText().toString()), Double.parseDouble(etB.getText().toString()));
@@ -62,7 +61,7 @@ public class FxActivity extends AppCompatActivity {
         });
     }
 
-    void ptbac1(double a, double b) {
+    public void ptbac1(double a, double b) {
         tvResult.setText("");
         tvX.setText("");
         if(a == 0) {
@@ -75,7 +74,7 @@ public class FxActivity extends AppCompatActivity {
         }
     }
 
-    void ptbac2(double a, double b, double c) {
+    public void ptbac2(double a, double b, double c) {
         tvResult.setText("");
         tvX.setText("");
         if(a==0) {
@@ -104,4 +103,5 @@ public class FxActivity extends AppCompatActivity {
             }
         }
     }
+
 }
