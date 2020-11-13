@@ -49,7 +49,7 @@ public class RegiterLoginTest extends TestCase {
         btnSignUp = loginActivity.findViewById(R.id.btnSignUp);
         user = loginActivity.findViewById(R.id.user);
         pass = loginActivity.findViewById(R.id.pass);
-        list = sqlHelper.getAllUser();
+
     }
     @Test
     public void testNotNull() throws Exception {
@@ -65,12 +65,262 @@ public class RegiterLoginTest extends TestCase {
             public void run() {
                 user.getEditText().setText("hungdv72@wr.com");
                 pass.getEditText().setText("1mbyi2ioC*");
-//                loginActivity.login(user,pass);
+//                loginActivity.onRegister(user,pass);
                 btnSignUp.performClick();
             }
         });
         shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
         assertThat(list.size(), is(1));
-//        Assert.assertThat(null,null,null);
+    }
+    @Test
+    public void testRegister() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                user.getEditText().setText("hungdv72.com");
+                pass.getEditText().setText("1mbyi2ioC*");
+//                loginActivity.onRegister(user,pass);
+                btnSignUp.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(0));
+        assertThat(user.getError().toString(), is("Bạn phải nhập email hoặc số điện thoại hợp lệ"));
+    }
+    @Test
+    public void testRegister3() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                user.getEditText().setText("0982219082555");
+                pass.getEditText().setText("1mbyi2ioC*");
+//                loginActivity.onRegister(user,pass);
+                btnSignUp.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(0));
+        assertThat(user.getError().toString(), is("Bạn phải nhập email hoặc số điện thoại hợp lệ"));
+    }
+    @Test
+    public void testRegister4() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1mbyi");
+//                loginActivity.onRegister(user,pass);
+                btnSignUp.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(0));
+        assertThat(pass.getError(), is("Mật khẩu phải có trên 6 ký tự"));
+    }
+    @Test
+    public void testRegister5() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1abcdefg*");
+//                loginActivity.onRegister(user,pass);
+                btnSignUp.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(0));
+        assertThat(pass.getError().toString(), is("Mật khẩu phải có 1 ký tự viết hoa"));
+    }
+    @Test
+    public void testRegister6() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1aBcdefg");
+//                loginActivity.onRegister(user,pass);
+                btnSignUp.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(0));
+        assertThat(pass.getError().toString(), is("Mật khẩu phải có 1 ký tự đặc biệt"));
+    }
+    @Test
+        public void testRegister7() throws Exception {
+            loginActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    user.getEditText().setText("hungdv72@wru.vn");
+                    pass.getEditText().setText("1ABCDDDDD*");
+//                loginActivity.onRegister(user,pass);
+                    btnSignUp.performClick();
+                }
+            });
+            shadowOf(Looper.getMainLooper()).idle();
+            list = sqlHelper.getAllUser();
+            assertThat(list.size(), is(0));
+            assertThat(pass.getError().toString(), is("Mật khẩu phải có 1 ký tự viết thường"));
+    }
+    @Test
+        public void testRegister8() throws Exception {
+            loginActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    user.getEditText().setText("hungdv72@wru.vn");
+                    pass.getEditText().setText("sgdsdsgT*");
+                    btnSignUp.performClick();
+                }
+            });
+            shadowOf(Looper.getMainLooper()).idle();
+            list = sqlHelper.getAllUser();
+            assertThat(list.size(), is(0));
+            assertThat(pass.getError().toString(), is("Mật khẩu phải có 1 chữ số"));
+    }
+    @Test
+        public void testRegister9() throws Exception {
+            loginActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    user.getEditText().setText("hungdv72@wru.vn");
+                    pass.getEditText().setText("1Agadgd  dgsg*");
+                    btnSignUp.performClick();
+                }
+            });
+            shadowOf(Looper.getMainLooper()).idle();
+            list = sqlHelper.getAllUser();
+            assertThat(list.size(), is(0));
+            assertThat(pass.getError().toString(), is("Mật khẩu không được chứa khoảng trống"));
+    }
+    @Test
+        public void testRegister10() throws Exception {
+            loginActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    user.getEditText().setText("hungdv72@wru.vn");
+                    pass.getEditText().setText("1Agadgddgsg*");
+                    btnSignUp.performClick();
+                    user.getEditText().setText("hungdv72@wru.vn");
+                    pass.getEditText().setText("1Agadgddgsg*");
+                    btnSignUp.performClick();
+                }
+            });
+            shadowOf(Looper.getMainLooper()).idle();
+            list = sqlHelper.getAllUser();
+            assertThat(list.size(), is(1));
+            assertThat(user.getError().toString(), is("Email đã tồn tại"));
+    }
+    @Test
+    public void testLogin() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1Abggax*");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(list.size(), is(1));
+        assertTrue(user.getError()==null);
+        assertTrue(pass.getError()==null);
+    }
+    @Test
+    public void testLogin2() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1Abgax*");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertThat(pass.getError().toString(), is("Mật khẩu không đúng"));
+    }
+    @Test
+    public void testLogin3() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("hungdv72@wru.vn");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("hungd2@wru.vn");
+                pass.getEditText().setText("1Abgax*");
+                btnSignIn.performClick();;
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        assertThat(user.getError().toString(), is("Tên đăng nhập không tồn tại"));
+    }
+    @Test
+    public void testLogin4() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("0922190825");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("0922190825");
+                pass.getEditText().setText("1Abggax*");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        list = sqlHelper.getAllUser();
+        assertTrue(user.getError()==null);
+        assertTrue(pass.getError()==null);
+    }
+    @Test
+    public void testLogin5() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("0922190825");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("0922190827");
+                pass.getEditText().setText("1Abggaxwere");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        assertThat(user.getError().toString(), is("Tên đăng nhập không tồn tại"));
+    }
+    @Test
+    public void testLogin6() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("0922190825");
+                pass.getEditText().setText("1Abggax*");
+                btnSignUp.performClick();
+                user.getEditText().setText("0922190825");
+                pass.getEditText().setText("1Abggax");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        assertThat(pass.getError().toString(), is("Mật khẩu không đúng"));
+    }
+    @Test
+    public void testLogin7() throws Exception {
+        loginActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                user.getEditText().setText("xf");
+                pass.getEditText().setText("1Abggax");
+                btnSignIn.performClick();
+            }
+        });
+        shadowOf(Looper.getMainLooper()).idle();
+        assertThat(user.getError().toString(), is("Bạn phải nhập email hoặc số điện thoại hợp lệ"));
     }
 }

@@ -64,17 +64,14 @@ public class LoginActivity extends AppCompatActivity {
     }
     public class LoginViewListener {
         void onLogin(TextInputLayout loginUser, TextInputLayout loginPass) {
-            if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
-            else {
-                loginUser.setError(getText(R.string.usernameNotExist));
-//                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
-                return;
-            }
+            if (sqlHelper.getAllUser().size()!=0) user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
+//            else {
+//                loginUser.setError(getText(R.string.usernameNotExist));
+////                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
+//                return;
+//            }
             if (valilator.isValidEmail(loginUser.getEditText().getText().toString())){
-                if (!loginUser.getEditText().getText().toString().isEmpty()){
-                    if (users.size()!=0) {
-                        user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
-                        if (user!=null) {
+                if (user.getUsername()!=null) {
                             if (md5(loginPass.getEditText().getText().toString()).equals(user.getPassword())) {
                                 Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                 Toast.makeText(getBaseContext(),getText(R.string.loginSuccess)+" \n"+ getText(R.string.wellcome)+" "+user.getUsername(),Toast.LENGTH_SHORT).show();
@@ -84,23 +81,13 @@ public class LoginActivity extends AppCompatActivity {
                                 loginPass.setError(getText(R.string.incorrectPassword));
                                 return;
                             }
-                        } else {
-                            loginUser.setError(getText(R.string.usernameNotExist));
-                            return;
-                        }
                     } else {
                         loginUser.setError(getText(R.string.usernameNotExist));
 //                        Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                         return;
                     }
-                } else {
-                    loginUser.setError(getText(R.string.username_empty));
-//                    Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
-                    return;
-                }
             } else if(valilator.validatePhoneNumber(loginUser.getEditText().getText().toString())){
-                    if (users.size()!=0) {
-                        user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
+                    if (user.getUsername()!=null) {
                         if (user!=null) {
                             if (md5(loginPass.getEditText().getText().toString()).equals(user.getPassword())) {
                                     Intent intent = new Intent(getBaseContext(), MainActivity.class);
@@ -162,7 +149,12 @@ public class LoginActivity extends AppCompatActivity {
             }if (valilator.hasSpace(loginPass.getEditText().getText().toString())) {
                 loginPass.setError(getText(R.string.hasSpaces));
                 return;
-            } sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
+            }
+            if (!valilator.hasNumber(loginPass.getEditText().getText().toString())){
+                loginPass.setError(getText(R.string.hasNumber));
+                return;
+            }
+            sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
             Toast.makeText(getBaseContext(),getText(R.string.registerSuccess),Toast.LENGTH_SHORT).show();
         }
     }
@@ -218,42 +210,42 @@ public class LoginActivity extends AppCompatActivity {
             }
         }, 1000);
     }
-    public void onRegister(TextInputLayout loginUser, TextInputLayout loginPass) {
-        if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
-        if (loginUser.getEditText().getText().toString().isEmpty()) {
-            loginUser.setError(getText(R.string.username_empty));
-            return;
-        }
-        if (!valilator.isValidEmail(loginUser.getEditText().getText().toString()) && !valilator.validatePhoneNumber(loginUser.getEditText().getText().toString()) ) {
-            loginUser.setError(getText(R.string.invalid_email));
-            return;
-        }
-        if (users.size()!=0) {
-            for (int i =0; i<users.size();i++) {
-                if (users.get(i).getUsername().equals(loginUser.getEditText().getText().toString())) {
-                    loginUser.setError(getText(R.string.usernameAvailable));
-                    return;
-                }
-            }
-        }
-        if (!valilator.hasLength(loginPass.getEditText().getText().toString())) {
-            loginPass.setError(getText(R.string.invalid_password));
-            return;
-        }
-        if (!valilator.hasLowerCase(loginPass.getEditText().getText().toString())) {
-            loginPass.setError(getText(R.string.hasLower));
-            return;
-        }if (!valilator.hasUpperCase(loginPass.getEditText().getText().toString())) {
-            loginPass.setError(getText(R.string.hasUpper));
-            return;
-        }if (!valilator.hasSymbol(loginPass.getEditText().getText().toString())) {
-            loginPass.setError(getText(R.string.hasSymbol));
-            return;
-        }if (valilator.hasSpace(loginPass.getEditText().getText().toString())) {
-            loginPass.setError(getText(R.string.hasSpaces));
-            return;
-        } sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
-        Toast.makeText(getBaseContext(),getText(R.string.registerSuccess),Toast.LENGTH_SHORT).show();
-    }
+//    public void onRegister(TextInputLayout loginUser, TextInputLayout loginPass) {
+//        if (sqlHelper.getAllUser().size()!=0) users = sqlHelper.getAllUser();
+//        if (loginUser.getEditText().getText().toString().isEmpty()) {
+//            loginUser.setError(getText(R.string.username_empty));
+//            return;
+//        }
+//        if (!valilator.isValidEmail(loginUser.getEditText().getText().toString()) && !valilator.validatePhoneNumber(loginUser.getEditText().getText().toString()) ) {
+//            loginUser.setError(getText(R.string.invalid_email));
+//            return;
+//        }
+//        if (users.size()!=0) {
+//            for (int i =0; i<users.size();i++) {
+//                if (users.get(i).getUsername().equals(loginUser.getEditText().getText().toString())) {
+//                    loginUser.setError(getText(R.string.usernameAvailable));
+//                    return;
+//                }
+//            }
+//        }
+//        if (!valilator.hasLength(loginPass.getEditText().getText().toString())) {
+//            loginPass.setError(getText(R.string.invalid_password));
+//            return;
+//        }
+//        if (!valilator.hasLowerCase(loginPass.getEditText().getText().toString())) {
+//            loginPass.setError(getText(R.string.hasLower));
+//            return;
+//        }if (!valilator.hasUpperCase(loginPass.getEditText().getText().toString())) {
+//            loginPass.setError(getText(R.string.hasUpper));
+//            return;
+//        }if (!valilator.hasSymbol(loginPass.getEditText().getText().toString())) {
+//            loginPass.setError(getText(R.string.hasSymbol));
+//            return;
+//        }if (valilator.hasSpace(loginPass.getEditText().getText().toString())) {
+//            loginPass.setError(getText(R.string.hasSpaces));
+//            return;
+//        } sqlHelper.insertUser(loginUser.getEditText().getText().toString().trim(),md5(loginPass.getEditText().getText().toString()));
+//        Toast.makeText(getBaseContext(),getText(R.string.registerSuccess),Toast.LENGTH_SHORT).show();
+//    }
 
 }
