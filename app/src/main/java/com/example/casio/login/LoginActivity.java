@@ -65,11 +65,6 @@ public class LoginActivity extends AppCompatActivity {
     public class LoginViewListener {
         void onLogin(TextInputLayout loginUser, TextInputLayout loginPass) {
             if (sqlHelper.getAllUser().size()!=0) user = sqlHelper.getUser(loginUser.getEditText().getText().toString());
-//            else {
-//                loginUser.setError(getText(R.string.usernameNotExist));
-////                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
-//                return;
-//            }
             if (valilator.isValidEmail(loginUser.getEditText().getText().toString())){
                 if (user.getUsername()!=null) {
                             if (md5(loginPass.getEditText().getText().toString()).equals(user.getPassword())) {
@@ -83,7 +78,6 @@ public class LoginActivity extends AppCompatActivity {
                             }
                     } else {
                         loginUser.setError(getText(R.string.usernameNotExist));
-//                        Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                         return;
                     }
             } else if(valilator.validatePhoneNumber(loginUser.getEditText().getText().toString())){
@@ -105,13 +99,11 @@ public class LoginActivity extends AppCompatActivity {
 //
                     } else {
                         loginUser.setError(getText(R.string.usernameNotExist));
-//                        Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                         return;
                     }
             }
             else {
                 loginUser.setError(getText(R.string.invalid_email));
-//                Toast.makeText(getBaseContext(),getText(R.string.login_failed),Toast.LENGTH_SHORT).show();
                 return;
             }
         }
